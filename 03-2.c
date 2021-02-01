@@ -11,7 +11,7 @@ int main()
 	printf("Something went wrong, can't create child process\n");
     else
     {
-	printf("I'm parent with PID = %d\nMy child's PID = %d\n", (int)getpid(), (int)pid);
+	printf("I'm parent with P = %d\nMy child's PID = %d\n", (int)getpid(), (int)pid);
 	sleep(1);
     }
     return 0;
