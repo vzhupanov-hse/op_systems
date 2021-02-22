@@ -1,31 +1,26 @@
-#include <stdio.h>
 #include <fcntl.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
-int main()
-{
+int main() {
     int fd;
-    int result;
+    int res;
     size_t size;
-    char str_res[14] = "Hello, world!";
-    char path[] = "text.fifo";
-
+    char str_res[14];
+    char path[] = "text.fifo"; 
     (void)umask(0);
     if ((fd = open(path, O_WRONLY)) < 0) {
-        printf("Can not open fifo for writting\n");
+        printf("Can not open fifo for writing\n");
         exit(-1);
     }
-    size = write(fd, str_res, 14);
+    size = write(fd, "Hello world!", 14);
     if (size != 14) {
-        printf("Can not write string to fifo\n");
+        printf("Can not write symbols to fifo\n");
         exit(-1);
     }
-    printf("Result: %s\n", str_res);
-    if (close(fd) < 0) {
-        printf("Can not close fifo\n"); exit(-1);
-    }
+    close(fd);
     return 0;
 }
