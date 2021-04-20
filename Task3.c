@@ -7,6 +7,13 @@
 
 int main()
 {
+    /*
+    * The semaphore is initialized with 1 at start.
+    * Parent: D(0, 1) -> in for loop:
+    *       write -> A(0, 1) -> Z -> D(0, 1) -> read
+    * Child: in for loop:
+    *       D(0, 2) -> read -> write -> A(0, 1)
+    */
     int fd[2];
     int res;
     int count;
