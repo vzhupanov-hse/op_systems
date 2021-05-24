@@ -1,10 +1,10 @@
+#include <sys/types.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/stat.h>
-#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
 void addOne(char* s, int index) {
     s[index] += 1;
@@ -16,43 +16,51 @@ void addOne(char* s, int index) {
 
 int main()
 {
-    int fd;
-    char name[] = "aa";
-    char symlink[] = "test/aa";
-    (void)umask(0);
-    // создаём директорию под файлы
+    int     fd;
+    char    fileName[] = "aa";
+    char    symlinkName[] = "test/aa";
+    (void) umask(0);
+
+    // СЃРѕР·РґР°С‘Рј РґРёСЂРµРєС‚РѕСЂРёСЋ РїРѕРґ С„Р°Р№Р»С‹
     if (mkdir("test", 0777) < 0) {
-        printf("Unable to create directory test. If it exists, delete it.\n");
+        printf("Unable to create dir 'test'. If it exists, please delete it.\n");
         exit(-1);
     }
-    // создаём начальный файл
+
+    // СЃРѕР·РґР°С‘Рј РЅР°С‡Р°Р»СЊРЅС‹Р№ С„Р°Р№Р»
     if ((fd = open("test/aa", O_WRONLY | O_CREAT, 0666)) < 0) {
-        printf("Can not open file\n");
+        printf("Can\'t open file\n");
         exit(-1);
     }
     if (close(fd) < 0) {
-        printf("Can not close file\n");
+        printf("Can\'t close file\n");
     }
-    int max = 0;
+
+    int maxRecursion = 0;
     while (1) {
-        addOne(symlink, 6);
-        if (symlink(name, symlink) != 0) {
+        addOne(symlinkName, 6);
+        if (symlink(fileName, symlinkName) != 0) {
             printf("Unable to create symlink\n");
             exit(-1);
         }
-        // проверяем, можно ли всё ещё открыть файл
-        if ((fd = open(symlink, O_WRONLY, 0666)) < 0) {
-            // если нельзя, значит мы достигли максимального уровня рекурсии
+
+        // РїСЂРѕРІРµСЂСЏРµРј, РјРѕР¶РЅРѕ Р»Рё РІСЃС‘ РµС‰С‘ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р»
+        if ((fd = open(symlinkName, O_WRONLY, 0666)) < 0) {
+            // РµСЃР»Рё РЅРµР»СЊР·СЏ, Р·РЅР°С‡РёС‚ РјС‹ РґРѕСЃС‚РёРіР»Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ СѓСЂРѕРІРЅСЏ СЂРµРєСѓСЂСЃРёРё
             break;
+        } else {
+            maxRecursion++;
         }
-        else {
-            max++;
-        }
+
         if (close(fd) < 0) {
-            printf("Can not close file\n");
+            printf("Can\'t close file\n");
         }
-        addOne(name, 1);
+
+        addOne(fileName, 1);
     }
-    printf("maxRecursion: %d\n", max);
+
+    printf("maxRecursion: %d\n", maxRecursion);
+
+
     return 0;
 }
